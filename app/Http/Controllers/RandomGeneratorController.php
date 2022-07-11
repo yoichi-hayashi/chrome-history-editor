@@ -17,4 +17,20 @@ class RandomGeneratorController extends Controller
         
         return view('welcome');
     }
+    
+    public function generate(Request $request)
+    {
+        $fromNum = $request->from_num;
+        $toNum = $request->to_num;
+        $count = $request->count;
+        $sumNum = $request->sum_num;
+        $forwardFix = $request->forward_fix;
+        $backwardFix = $request->backward_fix;
+        $exclusion = $request->exclusion;
+        
+        # dd($fromNum, $toNum, $count, $sumNum, $forwardFix, $backwardFix, $exclusion);
+        for ($i = 0 ; $i < $count ; $i++){
+            $numbers = mt_rand($fromNum, $toNum);
+        }
+    }
 }
