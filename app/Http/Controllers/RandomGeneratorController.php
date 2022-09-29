@@ -20,17 +20,29 @@ class RandomGeneratorController extends Controller
     
     public function generate(Request $request)
     {
-        $fromNum = $request->from_num;
-        $toNum = $request->to_num;
-        $count = $request->count;
-        $sumNum = $request->sum_num;
-        $forwardFix = $request->forward_fix;
-        $backwardFix = $request->backward_fix;
-        $exclusion = $request->exclusion;
+        $fromNum = (int) $request->from_num;
+        $toNum = (int) $request->to_num;
+        $count = (int) $request->count;
+        $sumNum = (int) $request->sum_num;
+        $forwardFix = (int) $request->forward_fix;
+        $backwardFix = (int) $request->backward_fix;
+        $exclusion = (int) $request->exclusion;
         
-        # dd($fromNum, $toNum, $count, $sumNum, $forwardFix, $backwardFix, $exclusion);
-        for ($i = 0 ; $i < $count ; $i++){
-            $numbers = mt_rand($fromNum, $toNum);
-        }
+        $numberContainer = [];
+        
+        $i = 0;
+        do {
+            $generateNum = mt_rand($fromNum, $toNum);
+            
+            if (!in_array($generateNum, $numberContainer, true)){
+                //配列に$generateNumを追加する
+                $numberContainer[] = $generateNum;
+                $i++;
+            }
+        } while ($i < $count);
+        
+        sort($numberContainer, SORT_ASC);
+        
+        dd($numberContainer);
     }
 }
