@@ -13,6 +13,10 @@
                 @if (Auth::check())
                     {{-- ユーザ一覧ページへのリンク --}}
                     <li class="nav-item"><a href="#" class="nav-link">ユーザー一覧</a></li>
+                    {{-- ログ登録ページへのリンク --}}
+                    <li class="nav-item">{!! link_to_route('logform.get', 'ログ登録', [], ['class' => 'nav-link']) !!}</li>
+                    {{-- SQLクエリジェネレーターへのリンク --}}
+                    <li class="nav-item">{!! link_to_route('sqlgenerator.get', 'SQLクエリ生成', [], ['class' => 'nav-link']) !!}</li>
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{ Auth::user()->name }}</a>
                         <ul class="dropdown-menu dropdown-menu-right">
