@@ -1,13 +1,13 @@
-//
 .js-output-area div input:checked + label {
-    background: #DC3545;
-    color: #FFF;
+  background: #DC3545;
+  color: #FFF;
 }
 
 .js-output-area input {
-    display: none;
+  display: none;
 }
 
 .js-output-area div label {
-    display: block;
+  display: block;
 }
+
