@@ -15,12 +15,12 @@
         
         <div class="mt-4 form-inline">
             <div class="form-group">
-                {!! Form::label('from_num', '範囲：') !!}
-                {!! Form::text('from_num', null, ['class' => 'form-control']) !!}
+                {!! Form::label('min_num', '範囲：') !!}
+                {!! Form::text('min_num', null, ['class' => 'form-control']) !!}
             </div>
             <div class="ml-2 form-group">
-                {!! Form::label('to_num', '～') !!}
-                {!! Form::text('to_num', null, ['class' => 'form-control']) !!}
+                {!! Form::label('max_num', '～', ['style' => 'margin-right: 8px;']) !!}
+                {!! Form::text('max_num', null, ['class' => 'form-control']) !!}
             </div>
         </div>
         
@@ -36,12 +36,12 @@
         
         <div class="form-inline">
             <div class="form-group">
-                {!! Form::label('forward_fix', '前方固定：') !!}
-                {!! Form::text('forward_fix', null, ['class' => 'form-control']) !!}
+                {!! Form::label('forward_stationary', '前方固定：') !!}
+                {!! Form::text('forward_stationary', null, ['class' => 'form-control']) !!}
             </div>
             <div class="ml-4 form-group">
-                {!! Form::label('backward_fix', '後方固定：') !!}
-                {!! Form::text('backward_fix', null, ['class' => 'form-control']) !!}
+                {!! Form::label('backward_stationary', '後方固定：') !!}
+                {!! Form::text('backward_stationary', null, ['class' => 'form-control']) !!}
             </div>
         </div>
         
@@ -51,18 +51,22 @@
         </div>
         
         <div>
-            {!! Form::submit('乱数を生成', ['class' => 'btn btn-primary']) !!}
+            {!! Form::button('乱数を生成', ['class' => 'btn btn-primary js-generate-button']) !!}
         </div>
         
-        <div class="mt-4 form-inline">
-            <div class="form-group">
-                {!! Form::textarea('result', null, ['class' => 'form-control']) !!}
+        <div class="my-4" style="display: flex;">
+            <div class="output-area border border-secondary" style="height: 300px; width: 400px; overflow: auto;">
+                @if (isset($randomNumbers))
+                    @foreach ($randomNumbers as $randomNumber)
+                        {{ $randomNumber }} <br>
+                    @endforeach
+                @endif
             </div>
-            <div class="ml-5 form-group">
-                {!! Form::textarea('sum_num_result', null, ['class' => 'form-control']) !!}
-            </div>
+            <div class="ml-5 addition-area border border-secondary" style="height: 300px; width: 400px; overflow: auto;"></div>
         </div>
         
     {!! Form::close() !!}
+    
+    <script src="{{ mix('js/ajax.js') }}"></script>
 @endsection
 
