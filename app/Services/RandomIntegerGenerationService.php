@@ -19,34 +19,6 @@ class RandomIntegerGenerationService
         
         $i = 0;
         
-        if($forwardStationary === null && $backwardStationary === null) {
-            generate:
-            do {
-                $generateNum = mt_rand($minNum, $maxNum);
-                $generateNumLength = strlen($minNum);
-                $generateNumStr = (string)$generateNum;
-                $excludes = explode(",", wordwrap($exclusion, 1, ",", true));
-
-                for($j = 0; $j < $generateNumLength; $j++) {
-                    if(!in_array($generateNumStr[$j], $excludes, true)) {
-                        $excludes[] = $generateNumStr[$j];
-                    } else {
-                        goto generate;
-                    }
-                }
-                    
-                if(!in_array($generateNum, $numberContainer, true)) {
-                    // 配列に$generateNumを追加する
-                    $numberContainer[] = $generateNum;
-                    $i++;
-                }
-            } while($i < $count);
-                
-            sort($numberContainer, SORT_ASC);
-                
-            return $numberContainer;
-        }
-            
         fixed_generate:
         do {
             /* 
@@ -58,7 +30,15 @@ class RandomIntegerGenerationService
             $randomNumLength = strlen($minNum) - (strlen($forwardStationary) + strlen($backwardStationary));
             // 10の累乗を用いて最小値と最大値を表し、XXXと同じ桁数(この場合は3桁)の乱数を生成
             // 以下、XXXの部分のみの乱数を中間乱数と呼ぶ
-            $randomNum = mt_rand(10**($randomNumLength - 1), (10**$randomNumLength) - 1);
+            $randomStart = substr($minNum, strlen($forwardStationary), $randomNumLength);
+            if((int)$randomStart < 10**($randomNumLength - 1)) {
+                $randomStart = (int)$randomStart + 10**($randomNumLength - 1);
+            }
+            $randomEnd = substr($maxNum, strlen($forwardStationary), $randomNumLength);
+            if((int)$randomEnd < 10**($randomNumLength - 1)) {
+                $randomEnd = (10**$randomNumLength) - 1;
+            }
+            $randomNum = mt_rand((int)$randomStart, (int)$randomEnd);
             // 生成される乱数は隣り合う数字が全て異なるものにしたい
             // 生成される中間乱数の最初(一番左)の数字を変数に格納
             $randomNumInit = ((string)$randomNum)[0];
@@ -114,7 +94,7 @@ class RandomIntegerGenerationService
             // 前方固定+中間乱数+後方固定の形に結合させる
             $formedNumStr = (string)$forwardStationary . (string)$randomNum . (string)$backwardStationary;
             // 文字列型だった乱数を整数型に変換
-            $formedNum = (int)$randomNumStr;
+            $formedNum = (int)$formedNumStr;
             // 乱数が$numberContainerの中に存在するか調べ、なければ追加する
             if(!in_array($formedNum, $numberContainer, true)) {
                 // 配列に$randomNumを追加する
