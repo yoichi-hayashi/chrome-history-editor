@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\HistoryLogSearchService;
 
 class HistoryLogController extends Controller
 {
@@ -25,11 +26,7 @@ class HistoryLogController extends Controller
     
     public function search(Request $request)
     {
-        $logName = $request->name_explore;
-        $minTime = $request->from_date;
-        $maxTime = $request->until_date;
-        $result = $request->user()->historylogs()->where('log_name', 'like', "%{$logName}%")
-            ->orWhereBetween('content_time', [$minTime, $maxTime])->get();
+        $result = HistoryLogSearchService::search($request);
         
         return view('logstore', [
             'logs' => $result
