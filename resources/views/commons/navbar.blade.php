@@ -11,8 +11,8 @@
             <ul class="navbar-nav mr-auto"></ul>
             <ul class="navbar-nav">
                 @if (Auth::check())
-                    {{-- ユーザ一覧ページへのリンク --}}
-                    <li class="nav-item"><a href="#" class="nav-link">ユーザー一覧</a></li>
+                    {{-- 乱数ジェネレーターへのリンク --}}
+                    <li class="nav-item">{!! link_to('', '乱数ジェネレーター', ['class' => 'nav-link']) !!}</li>
                     {{-- ログ登録ページへのリンク --}}
                     <li class="nav-item">{!! link_to_route('logform.get', 'ログ登録', [], ['class' => 'nav-link']) !!}</li>
                     {{-- SQLクエリジェネレーターへのリンク --}}
@@ -20,9 +20,6 @@
                     <li class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{{ Auth::user()->name }}</a>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            {{-- ユーザ詳細ページへのリンク --}}
-                            <li class="dropdown-item"><a href="#">マイページ</a></li>
-                            <li class="dropdown-divider"></li>
                             {{-- ログアウトへのリンク --}}
                             <li class="dropdown-item">{!! link_to_route('logout.get', 'ログアウト') !!}</li>
                         </ul>
