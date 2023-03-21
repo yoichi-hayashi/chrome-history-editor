@@ -32,4 +32,15 @@ class HistoryLogController extends Controller
             'logs' => $result
         ]);
     }
+    
+    public function destroy($id)
+    {
+        $historylog = \App\HistoryLog::findOrFail($id);
+        
+        if (\Auth::id() === $historylog->user_id) {
+            $historylog->delete();
+        }
+        
+        return back();
+    }
 }

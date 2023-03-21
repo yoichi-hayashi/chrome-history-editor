@@ -63,12 +63,24 @@
         </div>
     </div>
     
+    {!! Form::close() !!}
+    
     @if (isset($logs))
     <div class="mt-4 form-group form-inline">
       <ul class="list-group w-100">
         @foreach ($logs as $log)
         <li class="card list-group-item">
-          <div class="card-title">ログ名：{{ $log->log_name }} <span class="pl-3">{{ \Carbon\Carbon::parse($log->content_time)->format('Y-m-d H:i') }}</span></div>
+          <div class="form-inline">
+            <div class="card-title">ログ名：{{ $log->log_name }} <span class="pl-3">{{ \Carbon\Carbon::parse($log->content_time)->format('Y-m-d H:i') }}</span></div>
+            <div class="ml-4 mt-n2">
+              @if (Auth::id() === $log->user_id)
+                {!! Form::open(['route' => ['log.delete', $log->id]]) !!}
+                @method('delete')
+                  {!! Form::submit('削除', ['class'=>'btn btn-danger btn-sm']) !!}
+                {!! Form::close() !!}
+              @endif
+            </div>
+          </div>
           <div class="card-text">
             <div>コンテンツ内容：</div>
             <div>{{ $log->log_content }}</div>
@@ -79,5 +91,5 @@
     </div>
     @endif
     
-    {!! Form::close() !!}
+
 @endsection
