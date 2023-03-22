@@ -11017,8 +11017,14 @@ return jQuery;
 /* WEBPACK VAR INJECTION */(function($) {$('.js-generate-button').on('click', function (e) {
   var fromValue = $('select[name="from"]').val();
   var delId = $('input[name="del_id"]').val();
+  var fromBetween = $('select[name="from_between"]').val();
+  var delIdMin = $('input[name="del_id_min"]').val();
+  var delIdMax = $('input[name="del_id_max"]').val();
   var fromVisit = $('input[name="from_visit"]').val();
   var fromVisitId = $('input[name="from_visit_id"]').val();
+  var fromVisitBetween = $('input[name="from_visit_between"]').val();
+  var fromVisitMin = $('input[name="from_visit_min"]').val();
+  var fromVisitMax = $('input[name="from_visit_max"]').val();
   var visitTime = $('input[name="visit_time"]').val();
   var visitsId = $('input[name="visits_id"]').val();
   var lastVisitTime = $('input[name="last_visit_time"]').val();
@@ -11029,11 +11035,13 @@ return jQuery;
   var sequenceFix = $('input[name="sequence_fix"]').val();
   var sequenceName = $('select[name="sequence_name"]').val();
   var sql01 = "DELETE FROM ".concat(fromValue, " WHERE id = ").concat(delId, ";");
-  var sql02 = "UPDATE visits SET from_visit = ".concat(fromVisit, " WHERE id = ").concat(fromVisitId, ";");
-  var sql03 = "UPDATE visits SET visit_time = ".concat(visitTime, " WHERE id = ").concat(visitsId, ";");
-  var sql04 = "UPDATE visits SET last_visit_time = ".concat(lastVisitTime, " WHERE id = ").concat(urlsId, ";");
-  var sql05 = "UPDATE visits SET visit_duration = ".concat(untilTime, " - ").concat(fromTime, " WHERE id = ").concat(visitDurationId, ";");
-  var sql06 = "UPDATE sqlite_sequence SET seq = seq - ".concat(sequenceFix, " WHERE name = ").concat(sequenceName, ";");
+  var sql02 = "DELETE FROM ".concat(fromBetween, " WHERE id BETWEEN ").concat(delIdMin, " AND ").concat(delIdMax, ";");
+  var sql03 = "UPDATE visits SET from_visit = ".concat(fromVisit, " WHERE id = ").concat(fromVisitId, ";");
+  var sql04 = "UPDATE visits SET from_visit = ".concat(fromVisitBetween, " WHERE id BETWEEN ").concat(fromVisitMin, " AND ").concat(fromVisitMax, ";");
+  var sql05 = "UPDATE visits SET visit_time = ".concat(visitTime, " WHERE id = ").concat(visitsId, ";");
+  var sql06 = "UPDATE visits SET last_visit_time = ".concat(lastVisitTime, " WHERE id = ").concat(urlsId, ";");
+  var sql07 = "UPDATE visits SET visit_duration = ".concat(untilTime, " - ").concat(fromTime, " WHERE id = ").concat(visitDurationId, ";");
+  var sql08 = "UPDATE sqlite_sequence SET seq = seq - ".concat(sequenceFix, " WHERE name = ").concat(sequenceName, ";");
 
   if (delId !== "") {
     if (fromValue === "visits") {
@@ -11043,39 +11051,55 @@ return jQuery;
     }
   }
 
+  if (delIdMin !== "" && delIdMax !== "") {
+    if (fromBetween === "visits") {
+      $('.js-output-area').append("<div>\n          <input type=\"checkbox\" id=\"visits_delete_value-".concat(delIdMin, "_").concat(delIdMax, "\">\n          <label for=\"visits_delete_value-").concat(delIdMin, "_").concat(delIdMax, "\">").concat(sql02, "</label>\n        </div>"));
+    } else {
+      $('.js-output-area').append("<div>\n          <input type=\"checkbox\" id=\"urls_delete_value-".concat(delIdMin, "_").concat(delIdMax, "\">\n          <label for=\"urls_delete_value-").concat(delIdMin, "_").concat(delIdMax, "\">").concat(sql02, "</label>\n        </div>"));
+    }
+  } else if (delIdMin === "" && delIdMax !== "" || delIdMin !== "" && delIdMax === "") {
+    alert("レコード削除の項目が片方しか入力されていません");
+  }
+
   if (fromVisit !== "" && fromVisitId !== "") {
-    $('.js-output-area').append("<div>\n        <input type=\"checkbox\" id=\"from_visit_value-".concat(fromVisitId, "\">\n        <label for=\"from_visit_value-").concat(fromVisitId, "\">").concat(sql02, "</label>\n      </div>"));
+    $('.js-output-area').append("<div>\n        <input type=\"checkbox\" id=\"from_visit_value-".concat(fromVisitId, "\">\n        <label for=\"from_visit_value-").concat(fromVisitId, "\">").concat(sql03, "</label>\n      </div>"));
   } else if (fromVisit === "" && fromVisitId !== "" || fromVisit !== "" && fromVisitId === "") {
     alert("ページ遷移元修正の項目が片方しか入力されていません");
   }
 
+  if (fromVisitBetween !== "" && fromVisitMin !== "" && fromVisitMax !== "") {
+    $('.js-output-area').append("<div>\n        <input type=\"checkbox\" id=\"from_visit_value-".concat(fromVisitMin, "_").concat(fromVisitMax, "\">\n        <label for=\"from_visit_value-").concat(fromVisitMin, "_").concat(fromVisitMax, "\">").concat(sql04, "</label>\n      </div>"));
+  } else if (fromVisitBetween !== "" && fromVisitMin === "" && fromVisitMax === "" || fromVisitBetween === "" && fromVisitMin !== "" && fromVisitMax === "" || fromVisitBetween === "" && fromVisitMin === "" && fromVisitMax !== "" || fromVisitBetween !== "" && fromVisitMin !== "" && fromVisitMax === "" || fromVisitBetween !== "" && fromVisitMin === "" && fromVisitMax !== "" || fromVisitBetween === "" && fromVisitMin !== "" && fromVisitMax !== "") {
+    alert("ページ遷移元修正の項目のいずれかが不足しています");
+  }
+
   if (visitTime !== "" && visitsId !== "") {
-    $('.js-output-area').append("<div>\n        <input type=\"checkbox\" id=\"visit_time_value-".concat(visitsId, "\">\n        <label for=\"visit_time_value-").concat(visitsId, "\">").concat(sql03, "</label>\n      </div>"));
+    $('.js-output-area').append("<div>\n        <input type=\"checkbox\" id=\"visit_time_value-".concat(visitsId, "\">\n        <label for=\"visit_time_value-").concat(visitsId, "\">").concat(sql05, "</label>\n      </div>"));
   } else if (visitTime === "" && visitsId !== "" || visitTime !== "" && visitsId === "") {
     alert("visitsテーブルの閲覧時刻修正の項目が片方しか入力されていません");
   }
 
   if (lastVisitTime !== "" && urlsId !== "") {
-    $('.js-output-area').append("<div>\n        <input type=\"checkbox\" id=\"last_visit_time_value-".concat(urlsId, "\">\n        <label for=\"last_visit_time_value-").concat(urlsId, "\">").concat(sql04, "</label>\n      </div>"));
+    $('.js-output-area').append("<div>\n        <input type=\"checkbox\" id=\"last_visit_time_value-".concat(urlsId, "\">\n        <label for=\"last_visit_time_value-").concat(urlsId, "\">").concat(sql06, "</label>\n      </div>"));
   } else if (lastVisitTime === "" && urlsId !== "" || lastVisitTime !== "" && urlsId === "") {
     alert("urlsテーブルの閲覧時刻修正の項目が片方しか入力されていません");
   }
 
   if (untilTime !== "" && fromTime !== "" && visitDurationId !== "") {
-    $('.js-output-area').append("<div>\n        <input type=\"checkbox\" id=\"duration_value-".concat(visitDurationId, "\">\n        <label for=\"duration_value-").concat(visitDurationId, "\">").concat(sql05, "</label>\n      </div>"));
+    $('.js-output-area').append("<div>\n        <input type=\"checkbox\" id=\"duration_value-".concat(visitDurationId, "\">\n        <label for=\"duration_value-").concat(visitDurationId, "\">").concat(sql07, "</label>\n      </div>"));
   } else if (untilTime !== "" && fromTime === "" && visitDurationId === "" || untilTime === "" && fromTime !== "" && visitDurationId === "" || untilTime === "" && fromTime === "" && visitDurationId !== "" || untilTime !== "" && fromTime !== "" && visitDurationId === "" || untilTime !== "" && fromTime === "" && visitDurationId !== "" || untilTime === "" && fromTime !== "" && visitDurationId !== "") {
     alert("ページ滞在時間修正の項目のいずれかが不足しています");
   }
 
   if (sequenceFix !== "") {
-    $('.js-output-area').append("<div>\n        <input type=\"checkbox\" id=\"sqlite_sequence_value-".concat(sequenceFix, "\">\n        <label for=\"sqlite_sequence_value-").concat(sequenceFix, "\">").concat(sql06, "</label>\n      </div>"));
+    $('.js-output-area').append("<div>\n        <input type=\"checkbox\" id=\"sqlite_sequence_value-".concat(sequenceFix, "\">\n        <label for=\"sqlite_sequence_value-").concat(sequenceFix, "\">").concat(sql08, "</label>\n      </div>"));
   }
 
-  if (delId === "" && fromVisit === "" && fromVisitId === "" && visitTime === "" && visitsId === "" && lastVisitTime === "" && urlsId === "" && untilTime === "" && fromTime === "" && visitDurationId === "" && sequenceFix === "") {
+  if (delId === "" && delIdMin === "" && delIdMax === "" && fromVisit === "" && fromVisitId === "" && fromVisitBetween == "" && fromVisitMin == "" && fromVisitMax == "" && visitTime === "" && visitsId === "" && lastVisitTime === "" && urlsId === "" && untilTime === "" && fromTime === "" && visitDurationId === "" && sequenceFix === "") {
     alert("すべての入力欄が空です");
   }
 
-  if (delId !== "" || fromVisit !== "" && fromVisitId !== "" || visitTime !== "" && visitsId !== "" || lastVisitTime !== "" && urlsId !== "" || untilTime !== "" && fromTime !== "" && visitDurationId !== "" || sequenceFix !== "") {
+  if (delId !== "" || delIdMin !== "" && delIdMax !== "" || fromVisit !== "" && fromVisitId !== "" || fromVisitBetween !== "" && fromVisitMin !== "" && fromVisitMax !== "" || visitTime !== "" && visitsId !== "" || lastVisitTime !== "" && urlsId !== "" || untilTime !== "" && fromTime !== "" && visitDurationId !== "" || sequenceFix !== "") {
     $('.js-output-area').show().addClass('border border-secondary pr-3');
   }
 
