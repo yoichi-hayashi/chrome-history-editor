@@ -11015,27 +11015,27 @@ return jQuery;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function($) {$('.js-generate-button').on('click', function (e) {
-  var minNum = $('input[name="min_num"]').val();
-  var maxNum = $('input[name="max_num"]').val();
+  var rangeMin = $('input[name="range_min"]').val();
+  var rangeMax = $('input[name="range_max"]').val();
   var count = $('input[name="count"]').val();
-  var sumNum = $('input[name="sum_num"]').val();
-  var forwardStationary = $('input[name="forward_stationary"]').val();
-  var backwardStationary = $('input[name="backward_stationary"]').val();
+  var addValue = $('input[name="add_value"]').val();
+  var prefix = $('input[name="prefix"]').val();
+  var suffix = $('input[name="suffix"]').val();
   var exclusion = $('input[name="exclusion"]').val();
 
-  if (sumNum == '') {
-    sumNum = 0;
+  if (addValue == '') {
+    addValue = 0;
   }
 
   $.ajax('api/generate', {
     type: 'get',
     data: {
-      minNum: minNum,
-      maxNum: maxNum,
+      rangeMin: rangeMin,
+      rangeMax: rangeMax,
       count: count,
-      sumNum: sumNum,
-      forwardStationary: forwardStationary,
-      backwardStationary: backwardStationary,
+      addValue: addValue,
+      prefix: prefix,
+      suffix: suffix,
       exclusion: exclusion
     },
     dataType: 'json'
@@ -11045,8 +11045,8 @@ return jQuery;
     $.each(data, function (i, num) {
       $('.output-area').append("<div>".concat(num, "</div>"));
 
-      if (sumNum !== 0) {
-        $('.addition-area').append("<div>".concat(sumNum, " + ").concat(num, " = ").concat(sumNum - 0 + (num - 0), "</div>"));
+      if (addValue !== 0) {
+        $('.addition-area').append("<div>".concat(addValue, " + ").concat(num, " = ").concat(addValue - 0 + (num - 0), "</div>"));
       }
     }); // $('input').val('');
   }).fail(function (e) {

@@ -21,8 +21,8 @@ class RandomGeneratorController extends Controller
     
     public function generate(Request $request)
     {
-        $numberContainer = RandomIntegerGenerationService::generate($request);
+        $numberArray = RandomIntegerGenerationService::generate($request);
         
-        return response()->json($numberContainer);
+        return response()->json($numberArray);
     }
 }

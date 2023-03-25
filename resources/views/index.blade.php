@@ -16,12 +16,12 @@
         
         <div class="mt-4 form-inline">
             <div class="form-group">
-                {!! Form::label('min_num', '範囲：') !!}
-                {!! Form::text('min_num', null, ['class' => 'form-control']) !!}
+                {!! Form::label('range_min', '範囲：') !!}
+                {!! Form::text('range_min', null, ['class' => 'form-control']) !!}
             </div>
             <div class="ml-2 form-group">
-                {!! Form::label('max_num', '～', ['style' => 'margin-right: 8px;']) !!}
-                {!! Form::text('max_num', null, ['class' => 'form-control']) !!}
+                {!! Form::label('range_max', '～', ['style' => 'margin-right: 8px;']) !!}
+                {!! Form::text('range_max', null, ['class' => 'form-control']) !!}
             </div>
         </div>
         
@@ -31,18 +31,18 @@
         </div>
         
         <div class="form-group form-inline">
-            {!! Form::label('sum_num', '合計を取る値：') !!}
-            {!! Form::text('sum_num', null, ['class' => 'form-control']) !!}
+            {!! Form::label('add_value', '合計を取る値：') !!}
+            {!! Form::text('add_value', null, ['class' => 'form-control']) !!}
         </div>
         
         <div class="form-inline">
             <div class="form-group">
-                {!! Form::label('forward_stationary', '前方固定：') !!}
-                {!! Form::text('forward_stationary', null, ['class' => 'form-control']) !!}
+                {!! Form::label('prefix', '前方固定：') !!}
+                {!! Form::text('prefix', null, ['class' => 'form-control']) !!}
             </div>
             <div class="ml-4 form-group">
-                {!! Form::label('backward_stationary', '後方固定：') !!}
-                {!! Form::text('backward_stationary', null, ['class' => 'form-control']) !!}
+                {!! Form::label('suffix', '後方固定：') !!}
+                {!! Form::text('suffix', null, ['class' => 'form-control']) !!}
             </div>
         </div>
         

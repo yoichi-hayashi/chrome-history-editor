@@ -7,15 +7,15 @@ class RandomIntegerGenerationService
     public static function generate(Request $request)
     {
         // 範囲の最小値、最大値、生成個数、合計する数、前方固定、後方固定、除外する数を変数に格納
-        $minNum = $request->minNum;
-        $maxNum = $request->maxNum;
+        $rangeMin = $request->rangeMin;
+        $rangeMax = $request->rangeMax;
         $count = $request->count;
-        $sumNum = $request->sumNum;
-        $forwardStationary = $request->forwardStationary;
-        $backwardStationary = $request->backwardStationary;
+        $addValue = $request->addValue;
+        $prefix = $request->prefix;
+        $suffix = $request->suffix;
         $exclusion = $request->exclusion;
         
-        $numberContainer = [];
+        $numberArray = [];
         
         $i = 0;
         
@@ -24,50 +24,49 @@ class RandomIntegerGenerationService
             /* 
                 生成したい乱数の桁数から前方固定と後方固定の桁数を除いたものを変数に格納
                 (例.100000～200000、つまり6桁の乱数を生成し、前方固定が13、後方固定が8の場合、
-                生成される乱数は13XXX8の形になる。よって$randomNumLengthでXXXの桁数を取得して
-                格納している。)
+                生成される乱数は13XXX8の形になる。よって$digitでXXXの桁数を取得して格納する。)
             */
-            $randomNumLength = strlen($minNum) - (strlen($forwardStationary) + strlen($backwardStationary));
+            $digit = strlen($rangeMin) - (strlen($prefix) + strlen($suffix));
             // 10の累乗を用いて最小値と最大値を表し、XXXと同じ桁数(この場合は3桁)の乱数を生成
             // 以下、XXXの部分のみの乱数を中間乱数と呼ぶ
-            $randomStart = substr($minNum, strlen($forwardStationary), $randomNumLength);
-            if((int)$randomStart < 10**($randomNumLength - 1)) {
-                $randomStart = (int)$randomStart + 10**($randomNumLength - 1);
+            $middleRandomRangeMin = substr($rangeMin, strlen($prefix), $digit);
+            if((int)$middleRandomRangeMin < 10**($digit - 1)) {
+                $middleRandomRangeMin = (int)$middleRandomRangeMin + 10**($digit - 1);
             }
-            $randomEnd = substr($maxNum, strlen($forwardStationary), $randomNumLength);
-            if((int)$randomEnd < 10**($randomNumLength - 1)) {
-                $randomEnd = (10**$randomNumLength) - 1;
+            $middleRandomRangeMax = substr($rangeMax, strlen($prefix), $digit);
+            if((int)$middleRandomRangeMax < 10**($digit - 1)) {
+                $middleRandomRangeMax = (10**$digit) - 1;
             }
-            $randomNum = mt_rand((int)$randomStart, (int)$randomEnd);
+            $middleRandom = mt_rand((int)$middleRandomRangeMin, (int)$middleRandomRangeMax);
             // 生成される乱数は隣り合う数字が全て異なるものにしたい
             // 生成される中間乱数の最初(一番左)の数字を変数に格納
-            $randomNumInit = (substr((string)$randomNum, 0, 1));
+            $middleRandomFirst = (substr((string)$middleRandom, 0, 1));
             // 生成される中間乱数の最後(一番右)の数字を変数に格納
-            $randomNumEnd = (string)($randomNum % 10);
+            $middleRandomLast = (string)($middleRandom % 10);
             // 前方固定部の最後の数字を変数に格納
-            $forwardEnd = substr($forwardStationary, -1);
-            // $forwardEnd = $forwardStationary[strlen($forwardStationary) - 1];
+            $prefixLast = substr($prefix, -1);
+            // $prefixLast = $prefix[strlen($prefix) - 1];
             // 後方固定部の最初の数字を変数に格納
-            $backwardInit = substr($backwardStationary, 0, 1);
+            $suffixFirst = substr($suffix, 0, 1);
             /* 
                 生成された中間乱数の最初の数字と前方固定部の最後の数字が同じ、
                 または生成された中間乱数の最後の数字と後方固定部の最初の数字が同じなら
                 処理を最初からやり直す
             */
-            if($randomNumInit === $forwardEnd || $randomNumEnd === $backwardInit) {
+            if($middleRandomFirst === $prefixLast || $middleRandomLast === $suffixFirst) {
                 goto fixed_generate;
             }
             // 生成された中間乱数を文字列型に変換
-            $randomNumStr = (string)$randomNum;
-            $randomArray = [];
+            $middleRandomStr = (string)$middleRandom;
+            $middleRandomArray = [];
             /*
-                文字列型に変換した中間乱数を一文字ずつ$randomArrayの中に存在するかどうか調べ、
-                なければ$randomArrayに追加、あれば処理を最初からやり直す
+                文字列型に変換した中間乱数を一文字ずつ$middleRandomArrayの中に存在するかどうか調べ、
+                なければ$middleRandomArrayに追加、あれば処理を最初からやり直す
                 これによってまずは中間乱数だけを指定個数分生成した配列が出来上がる
             */
-            for($j = 0; $j < $randomNumLength; $j++) {
-                if(!in_array(substr($randomNumStr, $j, 1), $randomArray, true)) {
-                    $randomArray[] = substr($randomNumStr, $j, 1);
+            for($j = 0; $j < $digit; $j++) {
+                if(!in_array(substr($middleRandomStr, $j, 1), $middleRandomArray, true)) {
+                    $middleRandomArray[] = substr($middleRandomStr, $j, 1);
                 } else {
                     goto fixed_generate;
                 }
@@ -78,36 +77,36 @@ class RandomIntegerGenerationService
                 すると、例えば除外する数に「123」と入力していた場合、処理結果は
                 1,2,3
                 となる
-                次に、explode()を用いて","で先ほどの処理結果を区切って一要素とし、$excludesに配列として格納する
+                次に、explode()を用いて","で先ほどの処理結果を区切って一要素とし、$exclusionArrayに配列として格納する
             */
-            $excludes = explode(",", wordwrap($exclusion, 1, ",", true));
+            $exclusionArray = explode(",", wordwrap($exclusion, 1, ",", true));
             /*
-                中間乱数(XXX)の桁数分ループを回し、中間乱数を一文字ずつ$excludesの中に存在するか調べ、
+                中間乱数(XXX)の桁数分ループを回し、中間乱数を一文字ずつ$exclusionArrayの中に存在するか調べ、
                 なければ追加、あれば処理を最初からやり直す
             */
-            for($j = 0; $j < $randomNumLength; $j++) {
-                if(!in_array(substr($randomNumStr, $j, 1), $excludes, true)) {
-                    $excludes[] = substr($randomNumStr, $j, 1);
+            for($j = 0; $j < $digit; $j++) {
+                if(!in_array(substr($middleRandomStr, $j, 1), $exclusionArray, true)) {
+                    $exclusionArray[] = substr($middleRandomStr, $j, 1);
                 } else {
                     goto fixed_generate;
                 }
             }
             // 前方固定+中間乱数+後方固定の形に結合させる
-            $formedNumStr = (string)$forwardStationary . (string)$randomNum . (string)$backwardStationary;
+            $combinedRandomStr = (string)$prefix . $middleRandomStr . (string)$suffix;
             // 文字列型だった乱数を整数型に変換
-            $formedNum = (int)$formedNumStr;
-            // 乱数が$numberContainerの中に存在するか調べ、なければ追加する
-            if(!in_array($formedNum, $numberContainer, true)) {
-                // 配列に$randomNumを追加する
-                $numberContainer[] = $formedNum;
+            $combinedRandom = (int)$combinedRandomStr;
+            // 乱数が$numberArrayの中に存在するか調べ、なければ追加する
+            if(!in_array($combinedRandom, $numberArray, true)) {
+                // 配列に$middleRandomを追加する
+                $numberArray[] = $combinedRandom;
                 $i++;
             }
             
         } while($i < $count);
         
-        sort($numberContainer, SORT_ASC);
+        sort($numberArray, SORT_ASC);
         
-        return $numberContainer;
+        return $numberArray;
     }
 
 }

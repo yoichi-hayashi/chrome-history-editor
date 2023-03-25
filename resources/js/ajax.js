@@ -1,25 +1,25 @@
 $('.js-generate-button').on('click', (e) => {
     
-    const minNum = $('input[name="min_num"]').val();
-    const maxNum = $('input[name="max_num"]').val();
+    const rangeMin = $('input[name="range_min"]').val();
+    const rangeMax = $('input[name="range_max"]').val();
     const count = $('input[name="count"]').val();
-    let sumNum = $('input[name="sum_num"]').val();
-    const forwardStationary = $('input[name="forward_stationary"]').val();
-    const backwardStationary = $('input[name="backward_stationary"]').val();
+    let addValue = $('input[name="add_value"]').val();
+    const prefix = $('input[name="prefix"]').val();
+    const suffix = $('input[name="suffix"]').val();
     const exclusion = $('input[name="exclusion"]').val();
     
-    if(sumNum == '') {
-        sumNum = 0
+    if(addValue == '') {
+        addValue = 0
     }
     $.ajax('api/generate', {
         type: 'get',
         data: {
-            minNum,
-            maxNum,
+            rangeMin,
+            rangeMax,
             count,
-            sumNum,
-            forwardStationary,
-            backwardStationary,
+            addValue,
+            prefix,
+            suffix,
             exclusion
         },
         dataType: 'json'
@@ -31,9 +31,9 @@ $('.js-generate-button').on('click', (e) => {
             $('.output-area').append(
                 `<div>${num}</div>`
             );
-            if(sumNum !== 0) {
+            if(addValue !== 0) {
                 $('.addition-area').append(
-                    `<div>${sumNum} + ${num} = ${(sumNum - 0) + (num - 0)}</div>`
+                    `<div>${addValue} + ${num} = ${(addValue - 0) + (num - 0)}</div>`
                 );
             }
         })
