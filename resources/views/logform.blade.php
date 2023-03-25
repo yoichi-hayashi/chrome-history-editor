@@ -49,15 +49,15 @@
     <h2>ログ検索</h2>
     {!! Form::open(['route' => 'log.search', 'method' => 'get']) !!}
     <div class="mt-4 ml-4 form-group form-inline">
-        {!! Form::label('name_explore', 'ファイル名検索：') !!}
-        {!! Form::text('name_explore', null, ['class' => 'form-control']) !!}
+        {!! Form::label('name_search', 'ファイル名検索：') !!}
+        {!! Form::text('name_search', null, ['class' => 'form-control']) !!}
     </div>
     
     <div class="mt-2 ml-4 form-group form-inline">
-        {!! Form::label('time_explore', '日時検索：') !!}
-        <input type="datetime-local" id="from_date" name="from_date">
+        {!! Form::label('datetime_search', '日時検索：') !!}
+        <input type="datetime-local" id="start_datetime" name="start_datetime">
         <div class="mx-2">～</div>
-        <input type="datetime-local" id="until_date" name="until_date">
+        <input type="datetime-local" id="end_datetime" name="end_datetime">
         <div class="ml-3">
           {!! Form::submit('実行', ['class' => 'btn btn-primary']) !!}
         </div>
