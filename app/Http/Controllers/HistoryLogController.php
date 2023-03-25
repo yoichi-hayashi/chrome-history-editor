@@ -9,7 +9,7 @@ class HistoryLogController extends Controller
 {
     public function index()
     {
-        return view('logstore');
+        return view('logform');
     }
     
     public function store(Request $request)
@@ -20,15 +20,14 @@ class HistoryLogController extends Controller
             'content_time' => $request->content_time,
         ]);
 
-        // 前のURLへリダイレクトさせる
-        return back();
+        return view('logform');
     }
     
     public function search(Request $request)
     {
         $result = HistoryLogSearchService::search($request);
         
-        return view('logstore', [
+        return view('logform', [
             'logs' => $result
         ]);
     }
