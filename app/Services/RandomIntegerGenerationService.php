@@ -24,7 +24,7 @@ class RandomIntegerGenerationService
             /* 
                 生成したい乱数の桁数から前方固定と後方固定の桁数を除いたものを変数に格納
                 (例.100000～200000、つまり6桁の乱数を生成し、前方固定が13、後方固定が8の場合、
-                生成される乱数は13XXX8の形になる。よって$generateNumLengthでXXXの桁数を取得して
+                生成される乱数は13XXX8の形になる。よって$randomNumLengthでXXXの桁数を取得して
                 格納している。)
             */
             $randomNumLength = strlen($minNum) - (strlen($forwardStationary) + strlen($backwardStationary));
@@ -41,13 +41,14 @@ class RandomIntegerGenerationService
             $randomNum = mt_rand((int)$randomStart, (int)$randomEnd);
             // 生成される乱数は隣り合う数字が全て異なるものにしたい
             // 生成される中間乱数の最初(一番左)の数字を変数に格納
-            $randomNumInit = ((string)$randomNum)[0];
+            $randomNumInit = (substr((string)$randomNum, 0, 1));
             // 生成される中間乱数の最後(一番右)の数字を変数に格納
             $randomNumEnd = (string)($randomNum % 10);
             // 前方固定部の最後の数字を変数に格納
-            $forwardEnd = $forwardStationary[strlen($forwardStationary) - 1];
+            $forwardEnd = substr($forwardStationary, -1);
+            // $forwardEnd = $forwardStationary[strlen($forwardStationary) - 1];
             // 後方固定部の最初の数字を変数に格納
-            $backwardInit = $backwardStationary[0];
+            $backwardInit = substr($backwardStationary, 0, 1);
             /* 
                 生成された中間乱数の最初の数字と前方固定部の最後の数字が同じ、
                 または生成された中間乱数の最後の数字と後方固定部の最初の数字が同じなら
@@ -65,8 +66,8 @@ class RandomIntegerGenerationService
                 これによってまずは中間乱数だけを指定個数分生成した配列が出来上がる
             */
             for($j = 0; $j < $randomNumLength; $j++) {
-                if(!in_array($randomNumStr[$j], $randomArray, true)) {
-                    $randomArray[] = $randomNumStr[$j];
+                if(!in_array(substr($randomNumStr, $j, 1), $randomArray, true)) {
+                    $randomArray[] = substr($randomNumStr, $j, 1);
                 } else {
                     goto fixed_generate;
                 }
@@ -85,8 +86,8 @@ class RandomIntegerGenerationService
                 なければ追加、あれば処理を最初からやり直す
             */
             for($j = 0; $j < $randomNumLength; $j++) {
-                if(!in_array($randomNumStr[$j], $excludes, true)) {
-                    $excludes[] = $randomNumStr[$j];
+                if(!in_array(substr($randomNumStr, $j, 1), $excludes, true)) {
+                    $excludes[] = substr($randomNumStr, $j, 1);
                 } else {
                     goto fixed_generate;
                 }
